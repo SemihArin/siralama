@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bubble Sort Görselleştiricisi</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07060a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#07060a}}
+:root[data-theme="dark"]{--bg:#07060a}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:#e5e7eb;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+body{display:flex;justify-content:center}
+#app{position:relative;width:100%;max-width:480px;max-height:100vh;height:100%;display:flex;flex-direction:column;overflow:hidden;container-type:inline-size;
+background:radial-gradient(ellipse at 50% 35%,#1d0c14 0%,#09060a 70%)}
+#app::before,#app::after{content:"";position:absolute;top:0;width:55%;height:26%;opacity:.2;pointer-events:none;
+background:repeating-conic-gradient(from 90deg at 0 0,#fff 0 .4deg,transparent .4deg 11deg),repeating-radial-gradient(circle at 0 0,transparent 0 26px,#fff 26px 27px);
+-webkit-mask-image:radial-gradient(circle at 0 0,#000 0,transparent 72%);mask-image:radial-gradient(circle at 0 0,#000 0,transparent 72%)}
+#app::before{left:0}
+#app::after{right:0;transform:scaleX(-1)}
+#thr{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+#thr{transition:opacity .25s}
+#spw.free #sw,#spw.free #lgL,#spw.free #lgR{animation:none}
+#thp{fill:none;stroke:#e9ecf2;stroke-width:1.5;stroke-linecap:round;filter:drop-shadow(0 0 2px #fff)}
+#stage{position:relative;flex:1;min-height:62cqw;overflow:hidden}
+#slab{position:absolute;left:4%;right:4%;bottom:1cqw;height:9.5cqw}
+#slab::before{content:"";position:absolute;left:0;right:0;top:0;height:72%;clip-path:polygon(4% 0,96% 0,100% 100%,0 100%);background:linear-gradient(#586380,#434c66)}
+#slab::after{content:"";position:absolute;left:0;right:0;bottom:0;height:28%;border-radius:0 0 1.2cqw 1.2cqw;background:linear-gradient(#2d3446,#171a26)}
+#blocks{position:absolute;left:6%;right:6%;bottom:6.6cqw;height:34cqw;display:flex;gap:1.8cqw;align-items:flex-end}
+.blk{flex:1;position:relative;border-radius:.6cqw .6cqw .2cqw .2cqw;--f1:var(--b1,#4a5470);--f2:var(--b2,#2b3247);--s:var(--bs,#161a28);--t:var(--bt,#6b7592);--u:3.1cqw;
+background:
+ linear-gradient(0deg,rgba(0,0,0,.3) 0 1px,rgba(255,255,255,.05) 1px 2px,transparent 2px) bottom/100% var(--u) repeat-y,
+ linear-gradient(90deg,var(--f1) 0,var(--f2) 76%,var(--s) 76%,var(--s) 100%);
+display:flex;align-items:flex-start;justify-content:center;padding-top:1.4cqw;
+font:600 var(--fs,max(12px,3.6cqw)) 'Fira Code',monospace;color:#e3e8f2;box-shadow:0 1.4cqw 1.6cqw rgba(0,0,0,.7),inset 0 0 0 1px rgba(255,255,255,.06);transition:box-shadow .3s}
+.blk span{position:relative;z-index:1;min-width:var(--mw,2.1em);text-align:center;padding:.15em .3em;border-radius:99px;background:rgba(0,0,0,.32);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+.blk::before{content:"";position:absolute;left:0;right:0;top:-2.4cqw;height:2.6cqw;background:linear-gradient(180deg,var(--t),var(--f1));clip-path:polygon(12% 0,88% 0,100% 100%,0 100%)}
+.blk::after{content:"";position:absolute;left:0;right:0;top:-2.4cqw;bottom:0;opacity:0;transition:opacity .3s;pointer-events:none;
+background:repeating-conic-gradient(from 0deg at 50% 0,rgba(255,255,255,.8) 0 1.6deg,transparent 1.6deg 28deg),repeating-radial-gradient(circle at 50% 0,transparent 0 2cqw,rgba(255,255,255,.65) 2cqw 2.25cqw)}
+.blk.wb::after{opacity:1}
+.vneon .blk{background:linear-gradient(180deg,rgba(255,255,255,.06),transparent);border:2px solid var(--t);box-shadow:0 0 1.6cqw var(--t),inset 0 0 1.2cqw var(--t)}
+.vneon .blk::before{display:none}
+.vthin #blocks{justify-content:space-around}
+.vthin .blk{flex:0 0 3cqw}
+.vthin .blk span{font-size:.82em;min-width:0}
+.vpop .blk{background:linear-gradient(90deg,transparent calc(50% - 1px),var(--f1) calc(50% - 1px),var(--f1) calc(50% + 1px),transparent calc(50% + 1px));box-shadow:none;border-radius:0}
+.vpop .blk::before{top:0;left:50%;right:auto;width:min(100%,5cqw);height:auto;aspect-ratio:1;transform:translate(-50%,-50%);clip-path:none;border-radius:50%;background:radial-gradient(circle at 35% 30%,var(--t),var(--f2));box-shadow:0 0 1.6cqw var(--f1)}
+.vpop .blk span{position:absolute;top:0;left:50%;transform:translate(-50%,-50%);padding:0;background:none;box-shadow:none;min-width:0;z-index:3}
+.vpop .blk.cl,.vpop .blk.cr,.vpop .blk.done,.vpop .blk.pv,.vpop .blk.rg,.vpop .blk.srt{box-shadow:none}
+.seg{flex-wrap:wrap}
+.seg button{flex:1 0 28%}
+.gh{font:700 max(9px,2.2cqw) 'Fira Code',monospace;letter-spacing:.08em;text-transform:uppercase;color:rgba(240,165,60,.85);margin:2.2cqw 0 1.2cqw}
+.gh:first-child{margin-top:0}
+.vflat .blk{background:linear-gradient(180deg,var(--f1),var(--f2));border-radius:1cqw 1cqw .2cqw .2cqw}
+.vflat .blk::before{display:none}
+.hide-n .blk span{display:none}
+.blk.dim{opacity:.32;filter:saturate(.6)}
+.blk.srt{box-shadow:0 1.4cqw 1.6cqw rgba(0,0,0,.7),0 0 0 2px rgba(52,211,153,.5)}
+.blk .tg{position:absolute;left:50%;top:-6.6cqw;transform:translateX(-50%);padding:.15em .5em;border-radius:99px;background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.3);font:700 max(8px,2.1cqw) 'Fira Code',monospace;color:#fff;white-space:nowrap;pointer-events:none;z-index:2}
+#tree{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:2;display:none}
+#algDot{width:max(8px,2.2cqw);height:max(8px,2.2cqw);border-radius:50%;background:var(--b1,#4a5470);box-shadow:0 0 8px var(--b1,#4a5470)}
+.blk.rg{box-shadow:0 1.4cqw 1.6cqw rgba(0,0,0,.7),0 0 0 2px rgba(167,139,250,.75)}
+.blk.pv{--f1:#b79cff;--f2:#7c3aed;--s:#4c1d95;--t:#d8c7ff;color:#f5f0ff;box-shadow:0 0 3cqw rgba(167,139,250,.65)}
+.blk.cl{--f1:#f7b733;--f2:#e0891a;--s:#a8620f;--t:#fcd978;color:#fff7e0;box-shadow:0 0 3cqw rgba(247,183,51,.65)}
+.blk.cr{--f1:#45b0ea;--f2:#1c86cc;--s:#0f5f94;--t:#9bd8f7;color:#e8f6ff;box-shadow:0 0 3cqw rgba(69,176,234,.65)}
+.blk.done{--f1:#2fd868;--f2:#15a74a;--s:#0c6b2f;--t:#79ec9e;color:#eafff1;box-shadow:0 0 2.4cqw rgba(34,197,94,.5)}
+#webs{position:absolute;inset:0;width:100%;height:100%;z-index:4;pointer-events:none;opacity:0;transition:opacity .25s}
+#webs.on{opacity:1}
+#webs path{fill:none;stroke:#e9ecf2;stroke-width:1.3;stroke-linecap:round;filter:drop-shadow(0 0 2px #fff)}
+#spw{position:absolute;top:-1cqw;left:50%;width:max(48px,12.5cqw);margin-left:calc(max(48px,12.5cqw)/-2);z-index:5;pointer-events:none;transform-origin:50% 5%;transition:transform .7s cubic-bezier(.34,1.4,.64,1)}
+#sw{transform-origin:50% 5%;animation:swing 3.2s ease-in-out infinite}
+@keyframes swing{0%,100%{transform:rotate(-3.5deg)}50%{transform:rotate(3.5deg)}}
+#sp{display:block;width:100%;height:auto;overflow:visible;filter:drop-shadow(0 1.2cqw 1.4cqw rgba(0,0,0,.7))}
+#lgL,#lgR{transform-box:view-box}
+#lgL{transform-origin:50px 10px;animation:legL 2.6s ease-in-out infinite}
+#lgR{transform-origin:50px 10px;animation:legR 2.6s ease-in-out infinite}
+@keyframes legL{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(4deg)}}
+@keyframes legR{0%,100%{transform:rotate(2deg)}50%{transform:rotate(-4deg)}}
+#spw.busy #lgL,#spw.busy #lgR{animation-duration:.75s}
+#eyes{transform-box:fill-box;transform-origin:center;animation:blink 4.5s infinite}
+@keyframes blink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
+#act{text-align:center;font:500 max(14px,3.7cqw) 'Fira Code',monospace;color:#f0a53c;padding:2.2cqw 2cqw 2.4cqw;min-height:2.4em;text-shadow:0 0 10px rgba(240,165,60,.3)}
+#act.ok{color:#34d399;text-shadow:0 0 10px rgba(52,211,153,.35)}
+#code{margin:0 4cqw;max-height:34%;overflow:hidden;border:1px solid rgba(160,28,40,.5);border-radius:2cqw;background:rgba(9,8,13,.9);padding:2cqw 0;font:400 max(9px,2.7cqw)/1.72 'Fira Code',monospace;box-shadow:0 0 18px rgba(160,28,40,.12)}
+.ln{display:flex;white-space:pre;padding:0 2cqw 0 1.6cqw;border-left:3px solid transparent;transition:background .2s,border-color .2s;color:#d9d4c4}
+.ln i{color:#6b7280;font-style:normal;width:2ch;margin-right:2.6cqw;text-align:right;flex:none}
+.ln.on{background:rgba(110,22,30,.7);border-left-color:#ef4444}
+.k{color:#4e9bf5}.f{color:#6fb6d9}.n{color:#e9d58a}
+#alg{position:absolute;top:2.4cqw;left:2.4cqw;z-index:30;height:max(34px,9cqw);width:auto;margin:0;padding:0 3.2cqw;display:flex;align-items:center;gap:1.6cqw;
+border-radius:99px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:rgba(229,231,235,.55);opacity:.75;font:700 max(11px,2.9cqw) Inter,system-ui,sans-serif;transition:opacity .2s,color .2s,background .2s}
+#alg svg{width:max(12px,3.2cqw);height:max(12px,3.2cqw);fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s}
+#alg.on{opacity:1;color:#fff;background:rgba(239,68,68,.18);border-color:rgba(239,68,68,.55)}
+#alg.on svg{transform:rotate(180deg)}
+#algPanel{max-height:min(75vh,160cqw);overflow-y:auto;position:absolute;top:calc(max(34px,9cqw) + 4.2cqw);left:2.4cqw;z-index:30;width:min(80cqw,340px);padding:2.6cqw;border-radius:3cqw;
+background:rgba(12,10,16,.96);border:1px solid rgba(160,28,40,.55);box-shadow:0 10px 30px rgba(0,0,0,.6);opacity:0;transform:translateY(-6px) scale(.97);transform-origin:top left;pointer-events:none;transition:opacity .2s,transform .2s}
+#algPanel.open{opacity:1;transform:none;pointer-events:auto}
+.ai{margin:0 0 1.2cqw;width:100%;display:grid;grid-template-columns:1fr auto;gap:.4cqw 2cqw;text-align:left;padding:max(8px,2cqw) max(10px,2.6cqw);border-radius:2cqw;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);box-shadow:none;font:500 max(10px,2.5cqw) Inter,system-ui,sans-serif;color:#aeb4c0}
+.ai:last-child{margin-bottom:0}
+.ai b{font:700 max(12px,3.1cqw) Inter,system-ui,sans-serif;color:#fff}
+.ai em{font:500 max(10px,2.5cqw) 'Fira Code',monospace;font-style:normal;color:#f0a53c;align-self:center}
+.ai span{grid-column:1/3}
+.ai.on{background:rgba(239,68,68,.22);border-color:rgba(239,68,68,.7)}
+#stat{position:absolute;left:3.2cqw;top:calc(max(34px,9cqw) + 4cqw);z-index:3;pointer-events:none;font:500 max(9px,2.3cqw) 'Fira Code',monospace;color:rgba(229,231,235,.4)}
+#cfg{position:absolute;top:2.4cqw;right:2.4cqw;z-index:30;width:max(34px,9cqw);height:max(34px,9cqw);margin:0;padding:0;display:flex;align-items:center;justify-content:center;
+border-radius:50%;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:rgba(229,231,235,.5);opacity:.7;transition:opacity .2s,color .2s,background .2s}
+#cfg svg{width:58%;height:58%;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;transition:transform .5s}
+#cfg.on{opacity:1;color:#fff;background:rgba(239,68,68,.18);border-color:rgba(239,68,68,.55)}
+#cfg.on svg{transform:rotate(90deg)}
+#panel{max-height:min(75vh,160cqw);overflow-y:auto;position:absolute;top:calc(max(34px,9cqw) + 4.2cqw);right:2.4cqw;z-index:30;width:min(74cqw,320px);padding:3.6cqw;border-radius:3cqw;
+background:rgba(12,10,16,.95);border:1px solid rgba(160,28,40,.55);box-shadow:0 10px 30px rgba(0,0,0,.6);
+font:500 max(11px,2.7cqw) 'Fira Code',monospace;color:#cfd5e1;opacity:0;transform:translateY(-6px) scale(.97);transform-origin:top right;pointer-events:none;transition:opacity .2s,transform .2s}
+#panel.open{opacity:1;transform:none;pointer-events:auto}
+.row{display:flex;flex-direction:column;gap:1.4cqw;margin-bottom:3.2cqw}
+.row label{display:flex;justify-content:space-between;align-items:baseline;color:#aeb4c0}
+.row label b{color:#fff;font-weight:600}
+.row input[type=range]{width:100%;accent-color:#ef4444;height:max(18px,4cqw)}
+.row input:disabled{opacity:.35}
+.row.tg{flex-direction:row;justify-content:space-between;align-items:center}
+.row.tg input{width:max(18px,4.4cqw);height:max(18px,4.4cqw);accent-color:#ef4444}
+.seg{display:flex;gap:1cqw}
+.seg button{margin:0;flex:1;padding:max(7px,1.8cqw) 0;font:600 max(10px,2.5cqw) Inter,system-ui,sans-serif;border-radius:1.6cqw;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#aeb4c0;box-shadow:none}
+.seg button.on{background:rgba(239,68,68,.25);border-color:rgba(239,68,68,.7);color:#fff}
+.mini{margin:0;width:100%;padding:max(8px,2.2cqw);font:600 max(11px,2.8cqw) Inter,system-ui,sans-serif;border-radius:2cqw}
+button{margin:2.4cqw 4cqw 3cqw;font:600 max(12px,3.2cqw) Inter,system-ui,sans-serif;color:#fff;border:1px solid rgba(239,68,68,.6);border-radius:2.4cqw;padding:2.4cqw;cursor:pointer;background:linear-gradient(135deg,#7f1d1d,#451014);transition:transform .15s,opacity .2s}
+button:active{transform:scale(.97)}
+button:disabled{opacity:.45;cursor:not-allowed}
+</style>
+</head>
+<body>
+<div id="app">
+ <svg id="thr"><path id="thp"/><circle id="hk" r="3" fill="#e9ecf2"/></svg>
+  <div id="stage">
+  <div id="slab"></div>
+  <svg id="tree"></svg>
+<div id="blocks"></div>
+  <svg id="webs"><path id="w0"/><path id="w1"/></svg>
+  <div id="spw"><div id="sw">
+   <svg id="sp" viewBox="0 0 100 190" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+     <linearGradient id="r" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff6b5f"/><stop offset=".5" stop-color="#d4202a"/><stop offset="1" stop-color="#7a0f18"/></linearGradient>
+     <linearGradient id="u" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4f8ff5"/><stop offset=".5" stop-color="#2150c8"/><stop offset="1" stop-color="#15256e"/></linearGradient>
+    </defs>
+    <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+     <g id="lgL"><path d="M50 10L14 44L45 80" stroke="#05050a" stroke-width="14"/><path d="M50 10L14 44L45 80" stroke="url(#u)" stroke-width="11"/><path d="M50 10L14 44L45 80" stroke="url(#r)" stroke-width="11" stroke-dasharray="22 200"/></g><g id="lgR"><path d="M50 10L86 44L55 80" stroke="#05050a" stroke-width="14"/><path d="M50 10L86 44L55 80" stroke="url(#u)" stroke-width="11"/><path d="M50 10L86 44L55 80" stroke="url(#r)" stroke-width="11" stroke-dasharray="22 200"/></g><path d="M43 13Q50 18 57 13M43 19Q50 24 57 19" stroke="#e9ecf2" stroke-width="1.8"/>
+    </g>
+    <path d="M33 118C36 104 41 92 43 78H57C59 92 64 104 67 118Z" fill="url(#r)" stroke="#05050a" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M43 78H57C57.5 84 58.5 88 59 93H41C41.5 88 42.5 84 43 78Z" fill="url(#u)"/>
+    <g fill="#08080a" stroke="#08080a" stroke-width="1.4" stroke-linecap="round"><ellipse cx="50" cy="104" rx="3" ry="4.5"/><path d="M50 104l-8 7M50 104l8 7M50 104l-8-7M50 104l8-7M50 102l-6-9M50 102l6-9" fill="none"/></g>
+    <circle id="anc" cx="50" cy="6" r=".4" fill="none"/>
+    <circle cx="50" cy="138" r="17" fill="url(#r)" stroke="#05050a" stroke-width="2"/>
+    <path d="M50 121V155M33.5 134Q50 141 66.5 134M33.5 142Q50 149 66.5 142M38 126Q50 134 62 126M38 150Q50 142 62 150" stroke="#4a050c" stroke-width=".8" opacity=".55" fill="none"/>
+    <g id="eyeLook"><g id="eyes" fill="#fff" stroke="#05050a" stroke-width="1.6" stroke-linejoin="round"><path d="M34 143Q44 146 48 136Q38 132 34 143Z"/><path d="M66 143Q56 146 52 136Q62 132 66 143Z"/></g></g>
+    <g id="aL" fill="none" stroke-linecap="round">
+     <path d="M34 116Q22 140 20 166" stroke="#05050a" stroke-width="13"/>
+     <path d="M34 116Q22 140 20 166" stroke="url(#r)" stroke-width="10"/>
+     <path d="M17 154l7 1" stroke="#fff" stroke-width="2"/>
+     <circle cx="20" cy="169" r="6.5" fill="url(#r)" stroke="#05050a" stroke-width="2"/>
+     <circle id="f0" cx="20" cy="174" r=".4"/>
+    </g>
+    <g id="aR" fill="none" stroke-linecap="round">
+     <path d="M66 116Q78 140 80 166" stroke="#05050a" stroke-width="13"/>
+     <path d="M66 116Q78 140 80 166" stroke="url(#r)" stroke-width="10"/>
+     <path d="M83 154l-7 1" stroke="#fff" stroke-width="2"/>
+     <circle cx="80" cy="169" r="6.5" fill="url(#r)" stroke="#05050a" stroke-width="2"/>
+     <circle id="f1" cx="80" cy="174" r=".4"/>
+    </g>
+    <circle id="sL" cx="34" cy="116" r=".4" fill="none"/><circle id="sR" cx="66" cy="116" r=".4" fill="none"/>
+   </svg>
+  </div></div>
+ </div>
+ <div id="act">Hazır</div>
+ <div id="code"></div>
+
+ <button id="alg" aria-label="Algoritma"><i id="algDot"></i><span id="algN">Bubble Sort</span><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+ <div id="algPanel"></div>
+ <div id="stat"></div>
+ <button id="cfg" aria-label="Ayarlar"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+ <div id="panel">
+  <div class="row"><label>Sıralama yönü</label><div class="seg" id="dirSeg"><button data-v="asc" class="on">↑ Artan</button><button data-v="desc">↓ Azalan</button></div></div>
+  <div class="row"><label>Dizi tipi</label><div class="seg" id="kindSeg"><button data-v="mix" class="on">Karışık</button><button data-v="near">Yarı sıralı</button><button data-v="rev">Ters</button><button data-v="few">Tekrarlı</button><button data-v="mount">Dağ</button><button data-v="saw">Testere</button></div></div>
+  <div class="row"><label>Görünüm</label><div class="seg" id="viewSeg"><button data-v="box" class="on">Kutu</button><button data-v="spec">Spektrum</button><button data-v="flat">Düz</button><button data-v="neon">Neon</button><button data-v="thin">İnce</button><button data-v="pop">Lolipop</button></div></div>
+  <div class="row"><label>Dizi uzunluğu <b id="lenV">8</b></label><input id="len" type="range" min="4" max="16" step="1" value="8"></div>
+  <div class="row"><label>Hız <b id="spdV">1x</b></label><input id="spd" type="range" min="0.5" max="3" step="0.25" value="1"></div>
+  <div class="row tg"><label for="fx">Ağ efekti</label><input id="fx" type="checkbox" checked></div>
+  <div class="row tg"><label for="ov">Özel görünüm (etiket / ağaç)</label><input id="ov" type="checkbox" checked></div>
+  <div class="row tg"><label for="nums">Sayıları göster</label><input id="nums" type="checkbox" checked></div>
+  <div class="row tg"><label for="snd">Ses (değere göre nota)</label><input id="snd" type="checkbox"></div>
+  <div class="row tg"><label for="demo">Gösteri modu (hepsini sırayla çalıştır)</label><input id="demo" type="checkbox"></div>
+  <button id="shuf" class="mini">🔀 Diziyi karıştır</button>
+ </div>
+ <button id="go">▶ Başlat</button>
+</div>
+<script>
+let ORIG=[2,3,7,8,5,4,1,6],SP=1,webfx=true,DESC=false,KIND='mix',ALG='bubble',cmpN=0,swpN=0,VIEW='box',OV=true,treeLen=0,treeTimer=null,SND=false,AC=null,DEMO=false;
+const $=id=>document.getElementById(id);
+const sleep=ms=>new Promise(r=>setTimeout(r,ms/SP));
+const blocksEl=$('blocks'),codeEl=$('code'),act=$('act'),go=$('go'),spw=$('spw'),stage=$('stage'),webs=$('webs'),app=$('app'),thp=$('thp'),anc=$('anc');
+let arr=[...ORIG],running=false,tgt=null;
+const ARM=[{g:$('aL'),s:$('sL'),px:34,py:116,r0:15,ph:0,c:0},{g:$('aR'),s:$('sR'),px:66,py:116,r0:-15,ph:2,c:0}];
+const ctr=r=>[(r.left+r.right)/2,(r.top+r.bottom)/2];
+function py(t){
+  t=t.replace(/\{GT\}/g,DESC?'<':'>').replace(/\{LT\}/g,DESC?'>':'<').replace(/\{LE\}/g,DESC?'>=':'<=');
+  t=t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return t.replace(/\b(def|for|in|if|else|while|break|return|not|and|or|True|False)\b/g,'<span class="k">$1</span>')
+          .replace(/\b(len|range|int|max|min)\b/g,'<span class="f">$1</span>')
+          .replace(/\b(\d+)\b/g,'<span class="n">$1</span>');
+}
+function renderCode(){codeEl.innerHTML=ALGS[ALG].code.map((l,i)=>`<div class="ln" id="l${i}"><i>${i+1}</i>${py(l)}</div>`).join('')}
+function line(n){
+  document.querySelectorAll('.ln.on').forEach(e=>e.classList.remove('on'));
+  if(n==null)return;
+  const e=$('l'+n);e.classList.add('on');
+  codeEl.scrollTo({top:Math.max(0,e.offsetTop-codeEl.clientHeight/2),behavior:'smooth'});
+}
+function render(){
+  blocksEl.innerHTML='';
+  const n=arr.length,step=23/(n-1);
+  blocksEl.style.setProperty('--fs',n>12?'max(8px,2.2cqw)':n>8?'max(10px,2.9cqw)':'max(12px,3.6cqw)');
+  blocksEl.style.setProperty('--mw',n>12?'0':'2.1em');
+  blocksEl.style.gap=(n>12?.6:n>8?1.2:1.8)+'cqw';
+  arr.forEach(v=>{
+    const d=document.createElement('div');d.className='blk';d.dataset.v=v;d.innerHTML='<span>'+v+'</span>';
+    d.style.height=(8+step*(v-1))+'cqw';d.style.setProperty('--u',step+'cqw');
+    blocksEl.appendChild(d);
+  });
+  aim(null);
+  applyView();
+}
+let landAnim=null;
+function resetSpider(){
+  if(landAnim){landAnim.cancel();landAnim=null}
+  spw.classList.remove('free');spw.style.transition='';$('thr').style.opacity=1;
+}
+function fx(x,y,css,kf,opt){
+  const p=document.createElement('i');
+  p.style.cssText=`position:absolute;left:${x}px;top:${y}px;pointer-events:none;z-index:6;${css}`;
+  stage.appendChild(p);
+  const an=p.animate(kf,opt);an.onfinish=()=>p.remove();
+  return p;
+}
+const STAR='polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)';
+function impact(bx,by,mid){
+  const sr=stage.getBoundingClientRect(),cq=app.getBoundingClientRect().width/100,x=bx-sr.left,y=by-sr.top;
+  fx(x,y,`width:${cq*60}px;height:${cq*60}px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.5),rgba(239,68,68,.2) 40%,transparent 70%)`,
+    [{transform:'translate(-50%,-50%) scale(.2)',opacity:1},{transform:'translate(-50%,-50%) scale(1)',opacity:0}],{duration:600/SP,easing:'ease-out'});
+  [0,130].forEach(d=>fx(x,y,`width:0;height:0;border-radius:50%;border:2px solid rgba(255,255,255,.9);box-shadow:0 0 10px rgba(239,68,68,.9)`,
+    [{width:'0px',height:'0px',transform:'translate(-50%,-50%)',opacity:1},{width:cq*80+'px',height:cq*20+'px',transform:'translate(-50%,-50%)',opacity:0}],
+    {duration:850/SP,delay:d/SP,easing:'cubic-bezier(.1,.6,.3,1)',fill:'backwards'}));
+  for(let i=0;i<14;i++){
+    const sd=i%2?1:-1,mx=sd*cq*(8+Math.random()*28),my=cq*(3+Math.random()*6),sz=6+Math.random()*10;
+    fx(x,y,`width:${sz}px;height:${sz}px;border-radius:50%;background:rgba(220,225,235,.6);filter:blur(1px)`,
+      [{transform:'translate(-50%,-50%) scale(.4)',opacity:.9},{transform:`translate(calc(-50% + ${mx}px),calc(-50% - ${my}px)) scale(1.6)`,opacity:0}],
+      {duration:(600+Math.random()*400)/SP,easing:'ease-out'});
+  }
+  [...blocksEl.children].forEach((e,i)=>{
+    const d=Math.abs(i-mid);if(!d)return;
+    const h=cq*(7/(1+d*.35));
+    e.animate([{transform:'translateY(0)'},{transform:`translateY(${-h}px)`,offset:.4},{transform:'translateY(0)'}],{duration:550/SP,delay:d*70/SP,easing:'ease-out'});
+  });
+  stage.animate([{transform:'translate(0,0)'},{transform:'translate(-3px,4px)'},{transform:'translate(3px,-3px)'},{transform:'translate(-2px,2px)'},{transform:'translate(0,0)'}],{duration:350/SP});
+}
+function confetti(x,y){
+  const sr=stage.getBoundingClientRect(),cols=['#ef4444','#3b82f6','#ffffff','#34d399','#fcd978','#f472b6'];
+  for(let i=0;i<46;i++){
+    const sz=6+Math.random()*7,vx=(Math.random()*2-1)*sr.width*.5,peak=sr.height*(.12+Math.random()*.22),fall=sr.height*(.2+Math.random()*.2),rot=Math.random()*720-360;
+    const shape=i%3==0?`clip-path:${STAR};width:${sz*1.8}px;height:${sz*1.8}px`:`width:${sz}px;height:${sz}px;border-radius:${i%3==1?'50%':'2px'}`;
+    fx(x,y,`${shape};background:${cols[i%cols.length]};box-shadow:0 0 6px ${cols[i%cols.length]}`,
+      [{transform:'translate(-50%,-50%) rotate(0deg)',opacity:1,easing:'cubic-bezier(.2,.8,.4,1)'},
+       {transform:`translate(calc(-50% + ${vx*.6}px),calc(-50% - ${peak}px)) rotate(${rot/2}deg)`,opacity:1,offset:.45,easing:'ease-in'},
+       {transform:`translate(calc(-50% + ${vx}px),calc(-50% + ${fall}px)) rotate(${rot}deg)`,opacity:0}],
+      {duration:(1600+Math.random()*900)/SP});
+  }
+}
+async function finish(){
+  const n=arr.length,mid=n>>1;
+  spw.style.transition='none';spw.style.transform='rotate(0deg)';
+  spw.classList.add('free');
+  const cq=app.getBoundingClientRect().width/100,W=spw.offsetWidth;
+  const blk=blocksEl.children[mid].getBoundingClientRect();
+  const [ax,ay]=ctr(anc.getBoundingClientRect());
+  const bx=(blk.left+blk.right)/2,by=blk.top-2.4*cq;
+  const dx=bx-ax,dy=by-ay-.10*W;
+  $('thr').style.opacity=0;
+  const T=(x,y,r,sx,sy)=>`translate(${x}px,${y}px) rotate(${r}deg) scale(${sx},${sy})`;
+  landAnim=spw.animate([
+    {transform:T(0,0,0,1,1),easing:'cubic-bezier(.3,.1,.6,1)'},
+    {transform:T(dx*.35,dy*.3,220,1,1),offset:.4,easing:'cubic-bezier(.5,0,.9,.6)'},
+    {transform:T(dx,dy,540,1,1),offset:.8,easing:'ease-out'},
+    {transform:T(dx,dy,540,1.08,.88),offset:.9,easing:'ease-out'},
+    {transform:T(dx,dy,540,1,1)}
+  ],{duration:1400/SP,fill:'forwards'});
+  // uçuş izi (kırmızı-mavi ışık)
+  let tn=0;
+  const trail=setInterval(()=>{
+    const sr=stage.getBoundingClientRect(),[cx,cy]=ctr(spw.getBoundingClientRect()),c=tn++%2?'#3b82f6':'#ef4444';
+    fx(cx-sr.left,cy-sr.top,`width:${cq*2.6}px;height:${cq*2.6}px;border-radius:50%;background:${c};box-shadow:0 0 14px ${c};z-index:4`,
+      [{transform:'translate(-50%,-50%) scale(1)',opacity:.9},{transform:'translate(-50%,-50%) scale(.1)',opacity:0}],{duration:450/SP,easing:'ease-out'});
+  },40/SP);
+  const landed=landAnim.finished;
+  await sleep(1120);
+  clearInterval(trail);
+  impact(bx,by,mid);
+  await landed;
+  await sleep(250);
+  // sağına soluna bak
+  const D=2000/SP,k=[{offset:0},{offset:.3},{offset:.7},{offset:1}];
+  const eye=$('eyeLook').animate(k.map((f,i)=>({...f,transform:`translateX(${[0,-7,7,0][i]}px)`,easing:'ease-in-out'})),{duration:D});
+  const lean=$('sw').animate(k.map((f,i)=>({...f,transform:`rotate(${[0,9,-9,0][i]}deg)`,easing:'ease-in-out'})),{duration:D});
+  await Promise.all([eye.finished,lean.finished]);
+  // final: konfeti + yeşil ışık dalgası
+  const sr=stage.getBoundingClientRect(),hr=spw.getBoundingClientRect();
+  confetti(hr.left+hr.width/2-sr.left,hr.top+W*.25-sr.top);
+  [...blocksEl.children].forEach((e,i)=>e.animate([{filter:'brightness(1)'},{filter:'brightness(1.7) drop-shadow(0 0 14px #4ade80)',offset:.5},{filter:'brightness(1)'}],{duration:650/SP,delay:i*70/SP,easing:'ease-in-out'}));
+  act.animate([{transform:'scale(1)'},{transform:'scale(1.25)',offset:.4},{transform:'scale(1)'}],{duration:700/SP,easing:'ease-out'});
+  [...blocksEl.children].forEach((e,i)=>setTimeout(()=>tone(+e.dataset.v,120),i*70/SP));
+  await sleep(n*70+700);
+}
+function aim(els){
+  tgt=els;webs.classList.toggle('on',!!els);spw.classList.toggle('busy',!!els);
+  let tilt=0;
+  if(els){
+    const sr=stage.getBoundingClientRect(),rs=els.map(e=>e.getBoundingClientRect());
+    tilt=((rs[0].left+rs[1].right)/2-sr.left-sr.width/2)/sr.width*34;
+  }
+  spw.style.transform=`rotate(${tilt}deg)`;
+}
+function tick(){
+  const t=performance.now()/1000,ar=app.getBoundingClientRect(),sr=stage.getBoundingClientRect();
+  const [ax,ay]=ctr(anc.getBoundingClientRect());
+  const st=sr.top-ar.top;thp.setAttribute('d',`M${ar.width/2} ${st}L${ax-ar.left} ${ay-ar.top}`);$('hk').setAttribute('cx',ar.width/2);$('hk').setAttribute('cy',st);
+  const m=$('sp').getScreenCTM(),pa=Math.atan2(m.b,m.a)*180/Math.PI;
+  ARM.forEach((A,k)=>{
+    let goal=Math.sin(t*2.4+A.ph)*18;
+    if(tgt){
+      const [sx,sy]=ctr(A.s.getBoundingClientRect()),r=tgt[k].getBoundingClientRect();
+      const dx=(r.left+r.right)/2-sx,dy=r.top-sy;
+      goal=Math.max(-85,Math.min(85,Math.atan2(-dx,dy)*180/Math.PI-pa-A.r0));
+    }
+    A.c+=(goal-A.c)*.2;
+    A.g.setAttribute('transform',`rotate(${A.c} ${A.px} ${A.py})`);
+    if(tgt){
+      const f=$('f'+k).getBoundingClientRect(),r=tgt[k].getBoundingClientRect();
+      const sx=(f.left+f.right)/2-sr.left,sy=f.top-sr.top;
+      const tx=(r.left+r.right)/2-sr.left,ty=r.top-sr.top-4;
+      $('w'+k).setAttribute('d',`M${sx} ${sy}Q${(sx+tx)/2+(k?5:-5)} ${(sy+ty)/2} ${tx} ${ty}`);
+    }
+  });
+  requestAnimationFrame(tick);
+}
+const ord=(x,y)=>DESC?y-x:x-y;
+const B=()=>[...blocksEl.children];
+const statEl=$('stat');
+function stat(){statEl.textContent=`karşılaştırma ${cmpN} · yer değiştirme ${swpN}`}
+function beep(f,ms){
+  if(!SND)return;
+  try{
+    AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+    const o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime,d=Math.max(.05,ms/1000/SP);
+    o.type='triangle';o.frequency.value=f;
+    g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.12,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+d);
+    o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+d+.02);
+  }catch(e){}
+}
+const tone=(x,ms)=>beep(200+x/Math.max(1,arr.length)*900,ms);
+async function step(k,t,ms){line(k);act.textContent=t;await sleep(ms)}
+function hl(i,j){const b=B();b[i].classList.add('cl');b[j].classList.add('cr')}
+async function clr(){B().forEach(e=>e.classList.remove('cl','cr','wb'));aim(null);await sleep(60)}
+function mark(i){const e=B()[i];e.classList.remove('dim');e.classList.add('done')}
+function setPv(i){B().forEach(e=>e.classList.remove('pv'));if(i!=null)B()[i].classList.add('pv')}
+
+async function swapBlocks(i,j){
+  if(i>j)[i,j]=[j,i];
+  const bl=B(),a=bl[i],b=bl[j];
+  const dx=b.getBoundingClientRect().left-a.getBoundingClientRect().left;
+  const lift=stage.clientWidth*(.07+.012*Math.min(j-i,6));
+  const o={duration:700/SP,easing:'cubic-bezier(0.34,1.3,0.64,1)',fill:'forwards'};
+  a.style.zIndex=3;b.style.zIndex=2;
+  const A=a.animate([{transform:'translate(0,0) scale(1)'},{transform:`translate(${dx/2}px,${-lift}px) scale(1.1) rotate(-3deg)`,offset:.5},{transform:`translate(${dx}px,0) scale(1)`}],o);
+  const Bn=b.animate([{transform:'translate(0,0) scale(1)'},{transform:`translate(${-dx/2}px,${-lift*.45}px) scale(.92)`,offset:.5},{transform:`translate(${-dx}px,0) scale(1)`}],o);
+  await Promise.all([A.finished,Bn.finished]);
+  const ref=b.nextSibling;blocksEl.insertBefore(b,a);blocksEl.insertBefore(a,ref);
+  A.cancel();Bn.cancel();a.style.zIndex=b.style.zIndex='';
+  await sleep(150);
+}
+async function moveBlock(from,to){
+  const bl=B(),m=bl[from],rs=bl.map(e=>e.getBoundingClientRect().left);
+  const dx=rs[to]-rs[from],lift=stage.clientWidth*.08;
+  const o={duration:700/SP,easing:'cubic-bezier(0.34,1.2,0.64,1)',fill:'forwards'};
+  m.style.zIndex=3;
+  const an=[m.animate([{transform:'translate(0,0) scale(1)'},{transform:`translate(${dx/2}px,${-lift}px) scale(1.1)`,offset:.5},{transform:`translate(${dx}px,0) scale(1)`}],o)];
+  for(let k=to;k<from;k++)an.push(bl[k].animate([{transform:'translateX(0)'},{transform:`translateX(${rs[k+1]-rs[k]}px)`}],o));
+  await Promise.all(an.map(x=>x.finished));
+  blocksEl.insertBefore(m,bl[to]);
+  an.forEach(x=>x.cancel());m.style.zIndex='';
+  await sleep(150);
+}
+async function test(v,i,j,k){
+  hl(i,j);cmpN++;stat();tone(v[i],60);line(k);act.textContent=`compare a[${i}], a[${j}]`;await sleep(300);
+  return ord(v[i],v[j]);
+}
+async function doSwap(v,i,j,k){
+  if(i===j)return;
+  const bl=B(),L=bl[Math.min(i,j)],R=bl[Math.max(i,j)];
+  line(k);act.textContent=`swap a[${i}], a[${j}]`;
+  if(webfx){aim([L,R]);L.classList.add('wb');R.classList.add('wb');await sleep(600)}
+  await swapBlocks(i,j);
+  [v[i],v[j]]=[v[j],v[i]];swpN++;stat();tone(v[i],70);tone(v[j],70);
+}
+async function doMove(v,from,to,k){
+  if(from===to)return;
+  const bl=B(),m=bl[from],t=bl[to];
+  line(k);act.textContent=`insert a[${from}] → a[${to}]`;
+  if(webfx){aim([m,t]);m.classList.add('wb');t.classList.add('wb');await sleep(600)}
+  await moveBlock(from,to);
+  v.splice(to,0,v.splice(from,1)[0]);swpN+=from-to;stat();tone(v[to],80);
+}
+
+const THEME={
+ bubble:['#4a5470','#2b3247','#161a28','#6b7592'],
+ cocktail:['#3f6f9a','#26415c','#142636','#6aa3cf'],
+ selection:['#2f8a86','#1b4f4d','#0e2c2b','#5cc7c2'],
+ insertion:['#7d8a37','#4a5320','#272c10','#b3c25e'],
+ gnome:['#8a6a46','#52391f','#2b1d0e','#c09a6b'],
+ shell:['#9a4a8a','#5c2652','#301329','#d17fc0'],
+ comb:['#a39060','#615233','#312919','#d8c690'],
+ quick:['#a8465a','#632a35','#33151b','#d98a9a'],
+ merge:['#5a4a9a','#33295e','#19142f','#8f80d6'],
+ heap:['#b0662f','#6a3a16','#351d0a','#e0a070'],
+ exchange:['#56648a','#333d5c','#1a1f30','#8b9bc8'],
+ oddeven:['#3f8f9a','#235259','#112a2e','#6fc7d3'],
+ dsel:['#2f7f6a','#1a4a3e','#0d261f','#5cbfa6'],
+ binins:['#8a8a3a','#505020','#282810','#c4c46a'],
+ cycle:['#a05f8a','#5e3350','#301a29','#d495bf'],
+ pancake:['#b08a3f','#6a5020','#352810','#e6c27a'],
+ mergebu:['#6a5ac0','#3b3278','#1d193d','#a094f0'],
+ radix:['#c05a3a','#733220','#391910','#f09a7e']
+};
+const GROUPS=[['Takas tabanlı',['bubble','exchange','cocktail','oddeven','gnome','comb']],['Seçme',['selection','dsel','cycle','heap']],['Araya sokma',['insertion','binins','shell']],['Böl – fethet',['quick','merge','mergebu']],['Farklı yaklaşımlar',['pancake','radix']]];
+const ORDER=GROUPS.flatMap(g=>g[1]);
+function applyTheme(){THEME[ALG].forEach((c,i)=>app.style.setProperty(['--b1','--b2','--bs','--bt'][i],c))}
+function applyView(){
+  app.classList.remove('vflat','vneon','vthin','vpop');if(['flat','neon','thin','pop'].includes(VIEW))app.classList.add('v'+VIEW);
+  const bl=B(),n=bl.length;
+  bl.forEach(e=>{
+    ['--b1','--b2','--bs','--bt'].forEach(p=>e.style.removeProperty(p));
+    if(VIEW==='spec'){
+      const h=(+e.dataset.v-1)/Math.max(1,n-1)*300;
+      e.style.setProperty('--b1',`hsl(${h} 75% 55%)`);e.style.setProperty('--b2',`hsl(${h} 75% 38%)`);
+      e.style.setProperty('--bs',`hsl(${h} 70% 24%)`);e.style.setProperty('--bt',`hsl(${h} 80% 68%)`);
+    }
+  });
+  applyTheme();
+}
+// --- algoritmaya özel görünüm: etiketler, odak, bölge, ağaç ---
+const TG=new Map();
+function drawTags(){
+  B().forEach(e=>{const t=e.querySelector('.tg');if(t)t.remove()});
+  const by=new Map();
+  TG.forEach(({el,txt})=>{if(el.isConnected)by.set(el,[...(by.get(el)||[]),txt])});
+  by.forEach((arr,el)=>{const t=document.createElement('div');t.className='tg';t.textContent=arr.join('·');el.appendChild(t)});
+}
+function tag(key,i,txt){if(!OV)return;const e=B()[i];if(e)TG.set(key,{el:e,txt});else TG.delete(key);drawTags()}
+function untag(...ks){ks.forEach(k=>TG.delete(k));drawTags()}
+function clearTags(){TG.clear();drawTags()}
+function focus(lo,hi){B().forEach((e,k)=>e.classList.toggle('dim',OV&&!(k>=lo&&k<=hi)&&!e.classList.contains('done')))}
+function unfocus(){B().forEach(e=>e.classList.remove('dim'))}
+function region(lo,hi){B().forEach((e,k)=>e.classList.toggle('srt',OV&&lo!=null&&k>=lo&&k<=hi))}
+function drawTree(){
+  const t=$('tree');
+  if(!OV||!treeLen){t.style.display='none';return}
+  const bl=B(),W=stage.clientWidth,cq=W/100,n=Math.min(treeLen,bl.length);
+  const lv=Math.floor(Math.log2(n))+1,top=22*cq;
+  const avail=blocksEl.getBoundingClientRect().top-stage.getBoundingClientRect().top-top-5*cq;
+  const gap=Math.max(4*cq,Math.min(8*cq,avail/Math.max(1,lv-1))),r=Math.min(3.4*cq,gap*.42);
+  const pos=i=>{const L=Math.floor(Math.log2(i+1)),k=i+1-(1<<L);return[(k+.5)/(1<<L)*W*.9+W*.05,top+L*gap]};
+  let ed='',nd='';
+  for(let i=0;i<n;i++){
+    const [x,y]=pos(i);
+    if(i>0){const [px,py2]=pos((i-1)>>1);ed+=`<line x1="${px}" y1="${py2}" x2="${x}" y2="${y}" stroke="rgba(255,255,255,.28)" stroke-width="2"/>`}
+    const c=bl[i].classList,fill=c.contains('done')?'#34d399':c.contains('pv')?'#a78bfa':c.contains('cl')?'#f7b733':c.contains('cr')?'#45b0ea':'#4a5470';
+    nd+=`<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}" stroke="rgba(255,255,255,.55)" stroke-width="1.5"/><text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central" font-size="${Math.max(9,r*.95)}" font-weight="700" font-family="Fira Code,monospace" fill="#fff">${bl[i].dataset.v}</text>`;
+  }
+  t.innerHTML=ed+nd;t.style.display='block';
+}
+function startTree(){if(!treeTimer)treeTimer=setInterval(drawTree,60);drawTree()}
+function stopTree(){clearInterval(treeTimer);treeTimer=null;treeLen=0;$('tree').style.display='none';$('tree').innerHTML=''}
+function treeSet(len){treeLen=len;if(OV)startTree()}
+
+const ALGS={
+bubble:{name:'Bubble Sort',cx:'O(n²)',desc:'Komşuları karşılaştırır, ters olanı takas eder',code:[
+'def bubble_sort(a):',
+'    n = len(a)',
+'    for p in range(n - 1):',
+'        swapped = False',
+'        for i in range(n - 1 - p):',
+'            if a[i] {GT} a[i + 1]:',
+'                a[i], a[i + 1] = a[i + 1], a[i]',
+'                swapped = True',
+'        if not swapped:',
+'            break'],
+run:async v=>{
+  const n=v.length;
+  await step(0,'bubble_sort(a)',200);await step(1,`n = ${n}`,150);
+  for(let p=0;p<n-1;p++){
+    await step(2,`p = ${p}`,150);
+    let swapped=false;await step(3,'swapped = False',120);
+    for(let i=0;i<n-1-p;i++){
+      await step(4,`i = ${i}`,80);
+      tag('a',i,'i');tag('b',i+1,'i+1');
+      const r=await test(v,i,i+1,5);
+      if(r>0){await doSwap(v,i,i+1,6);await step(7,'swapped = True',120);swapped=true}
+      else{act.textContent='sıra doğru';await sleep(80)}
+      await clr();
+    }
+    untag('a','b');mark(n-1-p);
+    if(!swapped){await step(8,'if not swapped',300);await step(9,'break',300);break}
+    await step(8,'swapped = True → devam',150);
+  }
+}},
+cocktail:{name:'Cocktail Shaker',cx:'O(n²)',desc:'Bubble sort\'u ileri-geri çalıştırır, iki uçtan bitirir',code:[
+'def cocktail_sort(a):',
+'    lo, hi = 0, len(a) - 1',
+'    while lo < hi:',
+'        for i in range(lo, hi):',
+'            if a[i] {GT} a[i + 1]:',
+'                a[i], a[i + 1] = a[i + 1], a[i]',
+'        hi -= 1',
+'        for i in range(hi, lo, -1):',
+'            if a[i - 1] {GT} a[i]:',
+'                a[i - 1], a[i] = a[i], a[i - 1]',
+'        lo += 1'],
+run:async v=>{
+  const n=v.length;let lo=0,hi=n-1;
+  await step(0,'cocktail_sort(a)',200);await step(1,`lo = ${lo}, hi = ${hi}`,150);
+  while(lo<hi){
+    await step(2,`lo = ${lo} < hi = ${hi}`,100);
+    for(let i=lo;i<hi;i++){
+      await step(3,`i = ${i}  →`,60);tag('a',i,'i →');
+      const r=await test(v,i,i+1,4);
+      if(r>0)await doSwap(v,i,i+1,5);
+      await clr();
+    }
+    untag('a');mark(hi);hi--;await step(6,`hi = ${hi}`,100);
+    for(let i=hi;i>lo;i--){
+      await step(7,`i = ${i}  ←`,60);tag('a',i,'← i');
+      const r=await test(v,i-1,i,8);
+      if(r>0)await doSwap(v,i-1,i,9);
+      await clr();
+    }
+    untag('a');mark(lo);lo++;await step(10,`lo = ${lo}`,100);
+  }
+}},
+selection:{name:'Selection Sort',cx:'O(n²)',desc:'En küçüğü bulur, sıradaki yere koyar',code:[
+'def selection_sort(a):',
+'    n = len(a)',
+'    for i in range(n - 1):',
+'        m = i',
+'        for j in range(i + 1, n):',
+'            if a[j] {LT} a[m]:',
+'                m = j',
+'        a[i], a[m] = a[m], a[i]'],
+run:async v=>{
+  const n=v.length;
+  await step(0,'selection_sort(a)',200);await step(1,`n = ${n}`,150);
+  for(let i=0;i<n-1;i++){
+    await step(2,`i = ${i}`,150);tag('i',i,'i');
+    let m=i;setPv(m);tag('m',m,'min');await step(3,`m = ${m}`,150);
+    for(let j=i+1;j<n;j++){
+      await step(4,`j = ${j}`,80);tag('j',j,'j');
+      const r=await test(v,j,m,5);
+      if(r<0){m=j;setPv(m);tag('m',m,'min');await step(6,`m = ${m}`,120)}
+      await clr();
+    }
+    untag('j');
+    if(m!==i)await doSwap(v,i,m,7);else await step(7,'zaten yerinde',150);
+    untag('i','m');setPv(null);await clr();mark(i);
+  }
+  mark(n-1);
+}},
+insertion:{name:'Insertion Sort',cx:'O(n²)',desc:'Her elemanı sıralı kısımdaki yerine sokar',code:[
+'def insertion_sort(a):',
+'    for i in range(1, len(a)):',
+'        key = a[i]',
+'        j = i - 1',
+'        while j >= 0 and a[j] {GT} key:',
+'            a[j + 1] = a[j]',
+'            j -= 1',
+'        a[j + 1] = key'],
+run:async v=>{
+  const n=v.length;
+  await step(0,'insertion_sort(a)',200);
+  for(let i=1;i<n;i++){
+    await step(1,`i = ${i}`,150);region(0,i-1);
+    setPv(i);tag('k',i,'key');await step(2,`key = ${v[i]}`,150);
+    let j=i-1;await step(3,`j = ${j}`,120);
+    while(j>=0){
+      tag('j',j,'j');
+      const r=await test(v,j,i,4);
+      if(r>0){await step(5,`a[${j+1}] = a[${j}]`,120);await step(6,`j = ${j-1}`,100);j--;await clr()}
+      else{await clr();break}
+    }
+    untag('j');
+    if(j+1<i)await doMove(v,i,j+1,7);else await step(7,`a[${j+1}] = key`,150);
+    untag('k');setPv(null);await clr();
+  }
+  region(null);
+}},
+gnome:{name:'Gnome Sort',cx:'O(n²)',desc:'Bahçe cücesi gibi: ters görürse takas edip geri adım atar',code:[
+'def gnome_sort(a):',
+'    i = 0',
+'    while i < len(a):',
+'        if i == 0 or a[i - 1] {LE} a[i]:',
+'            i += 1',
+'        else:',
+'            a[i - 1], a[i] = a[i], a[i - 1]',
+'            i -= 1'],
+run:async v=>{
+  const n=v.length;let i=0;
+  await step(0,'gnome_sort(a)',200);await step(1,'i = 0',120);
+  while(i<n){
+    await step(2,`i = ${i} < ${n}`,60);tag('g',i,'🕷 i');
+    if(i===0){await step(3,'i == 0',100);await step(4,'i = 1',80);i++;continue}
+    const r=await test(v,i-1,i,3);
+    if(r<=0){await clr();await step(4,`i = ${i+1}`,80);i++}
+    else{await clr();await step(5,'else',60);await doSwap(v,i-1,i,6);await clr();await step(7,`i = ${i-1}`,80);i--}
+  }
+  untag('g');
+}},
+shell:{name:'Shell Sort',cx:'O(n log² n)',desc:'Uzak aralıklı insertion sort, aralığı yarıya indirir',code:[
+'def shell_sort(a):',
+'    gap = len(a) // 2',
+'    while gap > 0:',
+'        for i in range(gap, len(a)):',
+'            j = i',
+'            while j >= gap and a[j - gap] {GT} a[j]:',
+'                a[j - gap], a[j] = a[j], a[j - gap]',
+'                j -= gap',
+'        gap //= 2'],
+run:async v=>{
+  const n=v.length;let gap=n>>1;
+  await step(0,'shell_sort(a)',200);await step(1,`gap = ${gap}`,150);
+  while(gap>0){
+    await step(2,`gap = ${gap} > 0`,100);tag('G',0,`gap ${gap}`);
+    for(let i=gap;i<n;i++){
+      await step(3,`i = ${i}`,60);let j=i;await step(4,`j = ${j}`,60);
+      while(j>=gap){
+        tag('j',j,'j');tag('g',j-gap,'j-gap');
+        const r=await test(v,j-gap,j,5);
+        if(r>0){await doSwap(v,j-gap,j,6);await clr();await step(7,`j = ${j-gap}`,60);j-=gap}
+        else{await clr();break}
+      }
+      untag('j','g');
+    }
+    gap>>=1;await step(8,`gap = ${gap}`,120);
+  }
+  untag('G');
+}},
+comb:{name:'Comb Sort',cx:'O(n²)',desc:'Bubble sort\'un büyük adımlı hali, aralık 1.3 ile küçülür',code:[
+'def comb_sort(a):',
+'    gap, swapped = len(a), True',
+'    while gap > 1 or swapped:',
+'        gap = max(1, int(gap / 1.3))',
+'        swapped = False',
+'        for i in range(len(a) - gap):',
+'            if a[i] {GT} a[i + gap]:',
+'                a[i], a[i + gap] = a[i + gap], a[i]',
+'                swapped = True'],
+run:async v=>{
+  const n=v.length;let gap=n,swapped=true;
+  await step(0,'comb_sort(a)',200);await step(1,`gap = ${gap}`,150);
+  while(gap>1||swapped){
+    await step(2,`gap = ${gap}, swapped = ${swapped?'True':'False'}`,100);
+    gap=Math.max(1,Math.floor(gap/1.3));await step(3,`gap = ${gap}`,120);
+    swapped=false;await step(4,'swapped = False',80);
+    for(let i=0;i+gap<n;i++){
+      await step(5,`i = ${i}`,60);tag('a',i,'i');tag('b',i+gap,`i+${gap}`);
+      const r=await test(v,i,i+gap,6);
+      if(r>0){await doSwap(v,i,i+gap,7);await step(8,'swapped = True',80);swapped=true}
+      await clr();
+    }
+    untag('a','b');
+  }
+}},
+quick:{name:'Quick Sort',cx:'O(n log n)',desc:'Pivot seç, küçükleri sola büyükleri sağa ayır',code:[
+'def quick_sort(a, lo, hi):',
+'    if lo >= hi:',
+'        return',
+'    pivot = a[hi]',
+'    i = lo',
+'    for j in range(lo, hi):',
+'        if a[j] {LT} pivot:',
+'            a[i], a[j] = a[j], a[i]',
+'            i += 1',
+'    a[i], a[hi] = a[hi], a[i]',
+'    quick_sort(a, lo, i - 1)',
+'    quick_sort(a, i + 1, hi)'],
+run:async v=>{
+  const n=v.length;
+  async function qs(lo,hi){
+    await step(0,`quick_sort(${lo}, ${hi})`,150);
+    if(lo>=hi){await step(1,`lo ≥ hi`,80);await step(2,'return',80);if(lo===hi&&lo>=0&&lo<n)mark(lo);return}
+    focus(lo,hi);
+    setPv(hi);tag('P',hi,'pivot');await step(3,`pivot = a[${hi}] = ${v[hi]}`,200);
+    let i=lo;tag('i',i,'i');await step(4,`i = ${i}`,100);
+    for(let j=lo;j<hi;j++){
+      await step(5,`j = ${j}`,80);tag('j',j,'j');
+      const r=await test(v,j,hi,6);
+      if(r<0){
+        if(i!==j)await doSwap(v,i,j,7);else await step(7,'a[i] zaten yerinde',100);
+        await step(8,`i = ${i+1}`,100);i++;tag('i',i,'i');
+      }
+      await clr();
+    }
+    untag('j');
+    if(i!==hi)await doSwap(v,i,hi,9);else await step(9,'pivot yerinde',120);
+    untag('P','i');setPv(null);await clr();mark(i);
+    line(10);await qs(lo,i-1);
+    line(11);await qs(i+1,hi);
+  }
+  await qs(0,n-1);
+  unfocus();
+}},
+merge:{name:'Merge Sort',cx:'O(n log n)',desc:'Böl, ayrı ayrı sırala, yerinde birleştir',code:[
+'def merge_sort(a, lo, hi):',
+'    if hi - lo < 1:',
+'        return',
+'    mid = (lo + hi) // 2',
+'    merge_sort(a, lo, mid)',
+'    merge_sort(a, mid + 1, hi)',
+'    i, j = lo, mid + 1',
+'    while i <= mid and j <= hi:',
+'        if a[i] {LE} a[j]:',
+'            i += 1',
+'        else:',
+'            a.insert(i, a.pop(j))',
+'            i += 1; mid += 1; j += 1'],
+run:async v=>{
+  const n=v.length;
+  async function ms(lo,hi){
+    await step(0,`merge_sort(${lo}, ${hi})`,150);
+    if(hi-lo<1){await step(1,'hi - lo < 1',80);await step(2,'return',80);return}
+    const mid=(lo+hi)>>1;await step(3,`mid = ${mid}`,120);
+    line(4);await ms(lo,mid);
+    line(5);await ms(mid+1,hi);
+    focus(lo,hi);
+    B().forEach((e,k)=>{if(k>=lo&&k<=hi)e.classList.add('rg')});
+    let i=lo,j=mid+1,m=mid;await step(6,`i = ${i}, j = ${j}`,150);
+    while(i<=m&&j<=hi){
+      await step(7,`i ≤ ${m} ve j ≤ ${hi}`,60);
+      tag('i',i,'i');tag('j',j,'j');tag('m',m,'mid');
+      const r=await test(v,i,j,8);
+      if(r<=0){await clr();await step(9,`i = ${i+1}`,80);i++}
+      else{await clr();await step(10,'else',60);await doMove(v,j,i,11);await step(12,'i += 1; mid += 1; j += 1',120);i++;m++;j++}
+    }
+    untag('i','j','m');await clr();
+    B().forEach(e=>e.classList.remove('rg'));
+  }
+  await ms(0,n-1);
+  unfocus();
+}},
+heap:{name:'Heap Sort',cx:'O(n log n)',desc:'Yığın kurar (ağaç görünümü), en büyüğü sona atar',code:[
+'def heap_sort(a):',
+'    n = len(a)',
+'    for i in range(n // 2 - 1, -1, -1):',
+'        sift_down(a, n, i)',
+'    for end in range(n - 1, 0, -1):',
+'        a[0], a[end] = a[end], a[0]',
+'        sift_down(a, end, 0)',
+'def sift_down(a, n, i):',
+'    while True:',
+'        big, l, r = i, 2*i + 1, 2*i + 2',
+'        if l < n and a[l] {GT} a[big]: big = l',
+'        if r < n and a[r] {GT} a[big]: big = r',
+'        if big == i: return',
+'        a[i], a[big] = a[big], a[i]',
+'        i = big'],
+run:async v=>{
+  const n=v.length;
+  async function sift(len,i){
+    while(true){
+      await step(8,'while True',60);
+      let big=i;const l=2*i+1,r=2*i+2;setPv(big);tag('b',big,'big');
+      await step(9,`big = ${big}, l = ${l}, r = ${r}`,120);
+      if(l<len){tag('l',l,'l');const c=await test(v,l,big,10);if(c>0){big=l;setPv(big);tag('b',big,'big')}await clr()}
+      if(r<len){tag('r',r,'r');const c=await test(v,r,big,11);if(c>0){big=r;setPv(big);tag('b',big,'big')}await clr()}
+      untag('l','r');
+      if(big===i){await step(12,'big == i → return',120);untag('b');setPv(null);return}
+      await doSwap(v,i,big,13);untag('b');setPv(null);await clr();
+      await step(14,`i = ${big}`,100);i=big;
+    }
+  }
+  treeSet(n);
+  await step(0,'heap_sort(a)',200);await step(1,`n = ${n}`,100);
+  for(let i=(n>>1)-1;i>=0;i--){await step(2,`i = ${i}`,100);await step(3,`sift_down(a, ${n}, ${i})`,100);await sift(n,i)}
+  for(let end=n-1;end>0;end--){
+    await step(4,`end = ${end}`,100);
+    await doSwap(v,0,end,5);await clr();mark(end);treeSet(end);
+    await step(6,`sift_down(a, ${end}, 0)`,100);await sift(end,0);
+  }
+  mark(0);stopTree();
+}}
+};
+
+Object.assign(ALGS,{
+exchange:{name:'Exchange Sort',cx:'O(n²)',desc:'Her eleman, sağındakilerle tek tek kıyaslanıp takas edilir',code:[
+'def exchange_sort(a):',
+'    for i in range(len(a) - 1):',
+'        for j in range(i + 1, len(a)):',
+'            if a[i] {GT} a[j]:',
+'                a[i], a[j] = a[j], a[i]'],
+run:async v=>{
+  const n=v.length;
+  await step(0,'exchange_sort(a)',200);
+  for(let i=0;i<n-1;i++){
+    await step(1,`i = ${i}`,120);tag('i',i,'i');
+    for(let j=i+1;j<n;j++){
+      await step(2,`j = ${j}`,60);tag('j',j,'j');
+      const r=await test(v,i,j,3);
+      if(r>0)await doSwap(v,i,j,4);
+      await clr();
+    }
+    untag('j');mark(i);
+  }
+  untag('i');
+}},
+oddeven:{name:'Odd-Even Sort',cx:'O(n²)',desc:'Tek ve çift komşu çiftleri sırayla (paralel gibi) karşılaştırılır',code:[
+'def odd_even_sort(a):',
+'    done = False',
+'    while not done:',
+'        done = True',
+'        for start in (1, 0):',
+'            for i in range(start, len(a) - 1, 2):',
+'                if a[i] {GT} a[i + 1]:',
+'                    a[i], a[i + 1] = a[i + 1], a[i]',
+'                    done = False'],
+run:async v=>{
+  const n=v.length;let ok=false;
+  await step(0,'odd_even_sort(a)',200);await step(1,'done = False',100);
+  while(!ok){
+    await step(2,'while not done',80);ok=true;await step(3,'done = True',80);
+    for(const start of [1,0]){
+      await step(4,`start = ${start}  (${start?'tek':'çift'} çiftler)`,100);
+      for(let i=start;i<n-1;i+=2){
+        await step(5,`i = ${i}`,40);tag('a',i,'i');tag('b',i+1,'i+1');
+        const r=await test(v,i,i+1,6);
+        if(r>0){await doSwap(v,i,i+1,7);await step(8,'done = False',60);ok=false}
+        await clr();
+      }
+      untag('a','b');
+    }
+  }
+}},
+dsel:{name:'Double Selection',cx:'O(n²)',desc:'Her turda hem en küçüğü hem en büyüğü bulur, iki uca yerleştirir',code:[
+'def double_selection_sort(a):',
+'    lo, hi = 0, len(a) - 1',
+'    while lo < hi:',
+'        mn = mx = lo',
+'        for j in range(lo + 1, hi + 1):',
+'            if a[j] {LT} a[mn]: mn = j',
+'            if a[j] {GT} a[mx]: mx = j',
+'        a[lo], a[mn] = a[mn], a[lo]',
+'        if mx == lo: mx = mn',
+'        a[hi], a[mx] = a[mx], a[hi]',
+'        lo += 1; hi -= 1'],
+run:async v=>{
+  const n=v.length;let lo=0,hi=n-1;
+  await step(0,'double_selection_sort(a)',200);await step(1,`lo = ${lo}, hi = ${hi}`,120);
+  while(lo<hi){
+    await step(2,`lo = ${lo} < hi = ${hi}`,100);
+    let mn=lo,mx=lo;tag('mn',mn,'min');tag('mx',mx,'max');await step(3,'mn = mx = lo',100);
+    for(let j=lo+1;j<=hi;j++){
+      tag('j',j,'j');
+      const r1=await test(v,j,mn,5);if(r1<0){mn=j;tag('mn',mn,'min')}await clr();
+      const r2=await test(v,j,mx,6);if(r2>0){mx=j;tag('mx',mx,'max')}await clr();
+    }
+    untag('j');
+    if(mn!==lo)await doSwap(v,lo,mn,7);else await step(7,'min zaten yerinde',100);
+    if(mx===lo)mx=mn;await step(8,`mx = ${mx}`,80);
+    if(mx!==hi)await doSwap(v,hi,mx,9);else await step(9,'max zaten yerinde',100);
+    untag('mn','mx');await clr();
+    mark(lo);if(hi!==lo)mark(hi);
+    lo++;hi--;await step(10,`lo = ${lo}, hi = ${hi}`,100);
+  }
+}},
+binins:{name:'Binary Insertion',cx:'O(n²)',desc:'Yerleştirilecek konumu ikili aramayla bulur, sonra araya sokar',code:[
+'def binary_insertion_sort(a):',
+'    for i in range(1, len(a)):',
+'        key = a[i]',
+'        lo, hi = 0, i',
+'        while lo < hi:',
+'            mid = (lo + hi) // 2',
+'            if a[mid] {GT} key:',
+'                hi = mid',
+'            else:',
+'                lo = mid + 1',
+'        a.insert(lo, a.pop(i))'],
+run:async v=>{
+  const n=v.length;
+  await step(0,'binary_insertion_sort(a)',200);
+  for(let i=1;i<n;i++){
+    await step(1,`i = ${i}`,120);region(0,i-1);
+    setPv(i);tag('k',i,'key');await step(2,`key = ${v[i]}`,120);
+    let lo=0,hi=i;await step(3,`lo = ${lo}, hi = ${hi}`,100);
+    while(lo<hi){
+      await step(4,`lo = ${lo} < hi = ${hi}`,60);
+      const mid=(lo+hi)>>1;
+      tag('lo',lo,'lo');if(hi<i)tag('hi',hi,'hi');else untag('hi');tag('mid',mid,'mid');
+      await step(5,`mid = ${mid}`,80);
+      const r=await test(v,mid,i,6);await clr();
+      if(r>0){hi=mid;await step(7,`hi = ${hi}`,80)}
+      else{await step(8,'else',40);lo=mid+1;await step(9,`lo = ${lo}`,80)}
+    }
+    untag('lo','hi','mid');
+    if(lo<i)await doMove(v,i,lo,10);else await step(10,`a[${lo}] = key`,120);
+    untag('k');setPv(null);await clr();
+  }
+  region(null);
+}},
+cycle:{name:'Cycle Sort',cx:'O(n²)',desc:'Her değeri doğrudan son yerine gönderir, en az yazma yapar',code:[
+'def cycle_sort(a):',
+'    for cs in range(len(a) - 1):',
+'        item = a[cs]',
+'        pos = cs',
+'        for j in range(cs + 1, len(a)):',
+'            if a[j] {LT} item:',
+'                pos += 1',
+'        if pos == cs:',
+'            continue',
+'        while item == a[pos]:',
+'            pos += 1',
+'        a[pos], item = item, a[pos]'],
+run:async v=>{
+  const n=v.length;
+  await step(0,'cycle_sort(a)',200);
+  for(let cs=0;cs<n-1;cs++){
+    await step(1,`cs = ${cs}`,120);tag('c',cs,'cs');
+    while(true){
+      const item=v[cs];let pos=cs;setPv(cs);
+      await step(2,`item = ${item}`,100);await step(3,`pos = ${pos}`,80);
+      for(let j=cs+1;j<n;j++){
+        tag('j',j,'j');
+        const r=await test(v,j,cs,5);
+        if(r<0){pos++;await step(6,`pos = ${pos}`,40)}
+        await clr();
+      }
+      untag('j');
+      if(pos===cs){await step(7,'pos == cs',80);await step(8,'continue',80);break}
+      if(v[pos]===item){await step(9,'item == a[pos]',60);while(v[pos]===item)pos++;await step(10,`pos = ${pos}`,60)}
+      tag('p',pos,'pos');
+      await doSwap(v,cs,pos,11);untag('p');await clr();
+    }
+    setPv(null);untag('c');mark(cs);
+  }
+}},
+pancake:{name:'Pancake Sort',cx:'O(n²)',desc:'Sadece öndeki yığını çevirerek (flip) sıralar',code:[
+'def pancake_sort(a):',
+'    for size in range(len(a), 1, -1):',
+'        m = a.index(max(a[:size]))',
+'        if m != size - 1:',
+'            flip(a, m)',
+'            flip(a, size - 1)',
+'def flip(a, k):',
+'    a[:k + 1] = a[:k + 1][::-1]'],
+run:async v=>{
+  const n=v.length;
+  async function flip(k){
+    await step(6,`flip(a, ${k})`,100);
+    for(let i=0;i<k-i;i++){await doSwap(v,i,k-i,7);await clr()}
+  }
+  await step(0,'pancake_sort(a)',200);
+  for(let size=n;size>1;size--){
+    await step(1,`size = ${size}`,120);
+    let m=0;tag('m',m,'max');
+    for(let i=1;i<size;i++){
+      tag('j',i,'j');
+      const r=await test(v,i,m,2);
+      if(r>0){m=i;tag('m',m,'max')}
+      await clr();
+    }
+    untag('j');await step(2,`m = ${m}`,100);
+    if(m!==size-1){
+      await step(3,`m = ${m} ≠ ${size-1}`,80);untag('m');
+      if(m>0){await step(4,`flip(a, ${m})  → en büyük öne`,60);await flip(m)}
+      await step(5,`flip(a, ${size-1})  → en büyük sona`,60);await flip(size-1);
+    }else{await step(3,'zaten yerinde',100);untag('m')}
+    mark(size-1);
+  }
+}},
+radix:{name:'Radix Sort (LSD)',cx:'O(n)',desc:'Karşılaştırmaz! Değerleri basamaklarına göre sırayla dağıtır (taban 4)',code:[
+'def radix_sort(a):',
+'    for exp in (1, 4):',
+'        for i in range(len(a)):',
+'            d = (key(a[i]) // exp) % 4',
+'            pos = count(a[:i], digit <= d)',
+'            a.insert(pos, a.pop(i))'],
+run:async v=>{
+  const n=v.length,key=x=>DESC?n-x:x-1,dig=(x,e)=>Math.floor(key(x)/e)%4;
+  await step(0,'radix_sort(a)',200);
+  for(const e of [1,4]){
+    await step(1,`exp = ${e}  (${e===1?'birler':'dörtler'} basamağı)`,200);
+    for(let i=0;i<n;i++){
+      await step(2,`i = ${i}`,60);
+      const d=dig(v[i],e);tag('d',i,`d=${d}`);
+      await step(3,`d = ${d}`,100);
+      let pos=0;for(let k=0;k<i;k++)if(dig(v[k],e)<=d)pos++;
+      tag('p',pos,'→');await step(4,`pos = ${pos}`,100);
+      if(pos<i)await doMove(v,i,pos,5);else await step(5,'yerinde',60);
+      untag('d','p');await clr();
+    }
+  }
+}},
+mergebu:{name:'Merge Sort (aşağıdan)',cx:'O(n log n)',desc:'Özyineleme yok: 1\'lik, 2\'lik, 4\'lük bloklar birleştirilir',code:[
+'def merge_sort_bu(a):',
+'    w = 1',
+'    while w < len(a):',
+'        for lo in range(0, len(a), 2 * w):',
+'            mid = min(lo + w, len(a))',
+'            hi = min(lo + 2 * w, len(a))',
+'            merge(a, lo, mid, hi)',
+'        w *= 2',
+'def merge(a, lo, mid, hi):',
+'    i, j = lo, mid',
+'    while i < mid and j < hi:',
+'        if a[i] {LE} a[j]:',
+'            i += 1',
+'        else:',
+'            a.insert(i, a.pop(j))',
+'            i += 1; mid += 1; j += 1'],
+run:async v=>{
+  const n=v.length;
+  async function mrg(lo,mid,hi){
+    if(mid>=hi)return;
+    focus(lo,hi-1);B().forEach((e,k)=>{if(k>=lo&&k<hi)e.classList.add('rg')});
+    let i=lo,j=mid,m=mid;await step(9,`i = ${i}, j = ${j}`,100);
+    while(i<m&&j<hi){
+      await step(10,`i < ${m} ve j < ${hi}`,40);
+      tag('i',i,'i');tag('j',j,'j');tag('m',m-1,'mid');
+      const r=await test(v,i,j,11);
+      if(r<=0){await clr();await step(12,`i = ${i+1}`,60);i++}
+      else{await clr();await step(13,'else',40);await doMove(v,j,i,14);await step(15,'i += 1; mid += 1; j += 1',100);i++;m++;j++}
+    }
+    untag('i','j','m');await clr();
+    B().forEach(e=>e.classList.remove('rg'));
+  }
+  await step(0,'merge_sort_bu(a)',200);
+  let w=1;await step(1,'w = 1',100);
+  while(w<n){
+    await step(2,`w = ${w} < ${n}`,100);
+    for(let lo=0;lo<n;lo+=2*w){
+      await step(3,`lo = ${lo}`,60);tag('w',lo,`w=${w}`);
+      const mid=Math.min(lo+w,n),hi=Math.min(lo+2*w,n);
+      await step(4,`mid = ${mid}`,60);await step(5,`hi = ${hi}`,60);
+      await step(6,`merge(a, ${lo}, ${mid}, ${hi})`,80);
+      await mrg(lo,mid,hi);untag('w');
+    }
+    w*=2;await step(7,`w = ${w}`,100);
+  }
+  unfocus();
+}}
+});
+
+async function run(){
+  if(running)return;
+  running=true;go.disabled=true;lock(true);act.classList.remove('ok');
+  cmpN=swpN=0;stat();
+  const v=B().map(e=>+e.dataset.v);
+  await ALGS[ALG].run(v);
+  B().forEach(e=>{e.classList.remove('pv','rg','cl','cr','wb','dim','srt');e.classList.add('done')});clearTags();stopTree();
+  aim(null);line(null);arr=v;
+  act.classList.add('ok');act.textContent='✓ Sıralandı!';await finish();
+  go.textContent='↻ Yeniden Başlat';go.disabled=false;lock(false);running=false;go.dataset.done='1';
+  if(DEMO)setTimeout(demoNext,1500/SP);
+}
+go.onclick=()=>{
+  if(go.dataset.done)reset();
+  go.textContent='Çalışıyor...';run();
+};
+
+const cfg=$('cfg'),panel=$('panel'),lenR=$('len'),spdR=$('spd'),lenV=$('lenV'),spdV=$('spdV'),shuf=$('shuf'),fxT=$('fx');
+function lock(v){lenR.disabled=shuf.disabled=$('alg').disabled=v;panel.querySelectorAll('#dirSeg button,#kindSeg button').forEach(b=>b.disabled=v);algPanel.querySelectorAll('button').forEach(b=>b.disabled=v)}
+function genArr(n){
+  const asc=Array.from({length:n},(_,i)=>i+1),goal=DESC?[...asc].reverse():asc;
+  const rnd=m=>Math.random()*m|0;
+  const sortedAny=a=>a.every((x,i)=>i==0||(DESC?a[i-1]>=x:a[i-1]<=x));
+  const shuf=a=>{for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]]}return a};
+  let a;
+  if(KIND==='rev')return [...goal].reverse();
+  if(KIND==='mount')return [...asc.filter(x=>x%2),...asc.filter(x=>x%2===0).reverse()];
+  if(KIND==='saw')return [0,1,2,3].flatMap(r=>asc.filter(x=>x%4===r));
+  if(KIND==='few'){const lv=[.25,.5,.75,1].map(f=>Math.max(1,Math.round(n*f)));do{a=shuf(Array.from({length:n},(_,i)=>lv[i%4]))}while(sortedAny(a));return a}
+  if(KIND==='near'){do{a=[...goal];for(let t=0;t<Math.max(1,Math.round(n/5));t++){const i=rnd(n-1);[a[i],a[i+1]]=[a[i+1],a[i]]}}while(sortedAny(a));return a}
+  do{a=shuf([...asc])}while(sortedAny(a));
+  return a;
+}
+function reset(){
+  resetSpider();stopTree();TG.clear();arr=[...ORIG];render();
+  go.dataset.done='';go.textContent='▶ Başlat';act.classList.remove('ok');act.textContent='Hazır';line(null);
+  cmpN=swpN=0;stat();
+}
+function fresh(n){
+  if(running)return;
+  ORIG=genArr(n);reset();
+}
+const algPanel=$('algPanel'),algBtn=$('alg');
+function buildAlgs(){
+  algPanel.innerHTML=GROUPS.map(([t,ks])=>`<div class="gh">${t}</div>`+ks.map(k=>{const a=ALGS[k];return `<button class="ai${k===ALG?' on':''}" data-k="${k}" style="border-left:4px solid ${THEME[k][3]}"><b>${a.name}</b><em>${a.cx}</em><span>${a.desc}</span></button>`}).join('')).join('');
+}
+function pickAlg(k){ALG=k;$('algN').textContent=ALGS[k].name;buildAlgs();renderCode()}
+async function demoNext(){
+  if(!DEMO||running)return;
+  const i=(ORDER.indexOf(ALG)+1)%ORDER.length;
+  if(i===0)ORIG=genArr(ORIG.length);
+  pickAlg(ORDER[i]);reset();go.textContent='Çalışıyor...';run();
+}
+function closeAll(){panel.classList.remove('open');cfg.classList.remove('on');algPanel.classList.remove('open');algBtn.classList.remove('on')}
+algBtn.onclick=e=>{e.stopPropagation();const o=!algPanel.classList.contains('open');closeAll();if(o){algPanel.classList.add('open');algBtn.classList.add('on')}};
+algPanel.onclick=e=>{
+  const b=e.target.closest('button');if(!b||b.disabled||running)return;
+  pickAlg(b.dataset.k);reset();closeAll();
+};
+cfg.onclick=e=>{e.stopPropagation();const o=!panel.classList.contains('open');closeAll();if(o){panel.classList.add('open');cfg.classList.add('on')}};
+document.addEventListener('click',e=>{if(!panel.contains(e.target)&&!algPanel.contains(e.target))closeAll()});
+lenR.oninput=()=>{lenV.textContent=lenR.value;fresh(+lenR.value)};
+spdR.oninput=()=>{SP=+spdR.value;spdV.textContent=SP+'x'};
+fxT.onchange=()=>{webfx=fxT.checked};
+shuf.onclick=()=>fresh(ORIG.length);
+$('viewSeg').onclick=e=>{const b=e.target.closest('button');if(!b)return;[...$('viewSeg').children].forEach(x=>x.classList.toggle('on',x===b));VIEW=b.dataset.v;applyView()};
+$('ov').onchange=e=>{OV=e.target.checked;if(!OV){clearTags();unfocus();region(null);$('tree').style.display='none'}else if(treeLen)startTree()};
+$('snd').onchange=e=>{SND=e.target.checked;if(SND)beep(440,120)};
+$('demo').onchange=e=>{DEMO=e.target.checked;if(DEMO&&!running){if(go.dataset.done)reset();go.textContent='Çalışıyor...';run()}};
+$('nums').onchange=e=>app.classList.toggle('hide-n',!e.target.checked);
+function bindSeg(seg,cb){seg.onclick=e=>{const b=e.target.closest('button');if(!b||b.disabled||running)return;[...seg.children].forEach(x=>x.classList.toggle('on',x===b));cb(b.dataset.v)}}
+bindSeg($('dirSeg'),v=>{DESC=v==='desc';renderCode();fresh(ORIG.length)});
+bindSeg($('kindSeg'),v=>{KIND=v;fresh(ORIG.length)});
+addEventListener('resize',()=>{if(!running){const d=go.dataset.done;render();if(d)[...blocksEl.children].forEach(e=>e.classList.add('done'))}});
+buildAlgs();renderCode();stat();render();requestAnimationFrame(tick);
+</script>
+</body>
+</html>
